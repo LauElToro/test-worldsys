@@ -53,7 +53,7 @@ curl http://localhost:3000/health
 
 ---
 
-## 🧬 Probar archivo completo automáticamente
+## Probar archivo completo automáticamente
 
 ### Test end-to-end del procesamiento:
 
@@ -132,7 +132,7 @@ DB_NAME=ClientesDB
 
 ---
 
-## 🧱 SQL de Creación de Tabla
+## SQL de Creación de Tabla
 
 ```sql
 CREATE TABLE Clientes (
@@ -156,12 +156,12 @@ CREATE TABLE Clientes (
 
 ---
 
-## 🔥 Análisis de Performance con Clinic.js
+## Análisis de Performance con Clinic.js
 
 ### Ejecutar flamegraph:
 
 ```bash
-npm run analyze:flame
+npm run analyze:flame:export
 ```
 
 > Esto genera un archivo `.html` interactivo con el perfil de CPU y event loop del proceso.
@@ -181,15 +181,11 @@ npm run analyze:flame
 * Adaptable a `worker_threads`, colas Kafka/RabbitMQ o cron jobs distribuidos.
 * Compatible con `BULK INSERT` de SQL Server si se habilita.
 
-### 🧪 Prueba realista con 1.000 millones de líneas
+### 🧪 Prueba realista con 10.000 de líneas
 
 ```bash
 npm run generate:largefile
 ```
-
-Este comando genera un archivo de más de 4 TB (simulado por bloques), útil para test de stress y evaluación de escalabilidad real.
-
----
 
 ## 🧪 Testing
 
@@ -219,4 +215,4 @@ npm run test
 
 **Lautaro Figueroa**  
 Desafío técnico completado para Worldsys  
-GitHub: [github.com/lautyfigueroa](https://github.com/LauElToro)
+GitHub: [github.com/LaElToro](https://github.com/LauElToro)
