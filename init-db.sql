@@ -11,15 +11,10 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Clientes' AND xtype='U')
 CREATE TABLE Clientes (
   Nombre VARCHAR(100),
   Apellido VARCHAR(100),
-  Email VARCHAR(100)
-);
-GO
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Logs' AND xtype='U')
-CREATE TABLE Logs (
-  id INT IDENTITY(1,1) PRIMARY KEY,
-  timestamp VARCHAR(100),
-  level VARCHAR(50),
-  message VARCHAR(MAX),
-  meta NVARCHAR(MAX)
+  DNI VARCHAR(20),
+  Estado VARCHAR(50),
+  FechaIngreso VARCHAR(50),
+  EsPep VARCHAR(10),
+  EsSujetoObligado VARCHAR(10)
 );
 GO

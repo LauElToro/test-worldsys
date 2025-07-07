@@ -1,29 +1,54 @@
 import fs from 'fs';
 import path from 'path';
+import { faker } from '@faker-js/faker';
 
-const outputPath = path.resolve(__dirname, '../data/CLIENTES_IN_0425_FUSIONADO_PROD.dat');
-const stream = fs.createWriteStream(outputPath, { flags: 'w' });
+const FILE_PATH = path.resolve(__dirname, '../challenge/input/CLIENTES_IN_0425.dat');
+const RECORDS = 100_000;
+const ERROR_RATE = 0.2; // 20% de líneas con errores intencionales, puedes modificarlo para tus pruebas.
 
-const TOTAL_LINES = 1_000;
+// Asegurarse de que el directorio exista
+const dir = path.dirname(FILE_PATH);
+fs.mkdirSync(dir, { recursive: true });
 
-const nombres = ['Juan', 'Ana', 'Luis', 'María', 'Carlos', 'Lucía'];
-const apellidos = ['Pérez', 'Gómez', 'Rodríguez', 'Fernández', 'López', 'Martínez'];
+const stream = fs.createWriteStream(FILE_PATH);
 
-function getRandom<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+for (let i = 0; i < RECORDS; i++) {
+  const isCorrupted = Math.random() < ERROR_RATE;
+
+  let nombre = faker.person.firstName();
+  let apellido = faker.person.lastName();
+  let dni = faker.number.int({ min: 10000000, max: 99999999 });
+  let estado = faker.helpers.arrayElement(['Activo', 'Inactivo']);
+  let fechaIngreso = '';
+  let esPep: string | boolean = faker.datatype.boolean();
+  let esSujetoObligado: string | boolean = faker.datatype.boolean();
+
+  if (isCorrupted) {
+    const corruptionType = faker.number.int({ min: 1, max: 3 });
+
+    switch (corruptionType) {
+      case 1:
+        fechaIngreso = faker.helpers.arrayElement(['0000-00-00', '99/99/9999', '']);
+        break;
+      case 2:
+        esPep = '';
+        esSujetoObligado = '';
+        fechaIngreso = faker.date.past({ years: 10 }).toLocaleDateString('en-US');
+        break;
+      case 3:
+        nombre = faker.lorem.words(50);
+        apellido = faker.lorem.words(50);
+        fechaIngreso = faker.date.past({ years: 10 }).toLocaleDateString('en-US');
+        break;
+    }
+  } else {
+    fechaIngreso = faker.date.past({ years: 10 }).toLocaleDateString('en-US');
+  }
+
+  const linea = `${nombre}|${apellido}|${dni}|${estado}|${fechaIngreso}|${esPep}|${esSujetoObligado}\n`;
+  stream.write(linea);
 }
 
-(async () => {
-  console.log(`✍️ Generando archivo con ${TOTAL_LINES} líneas...`);
-  for (let i = 0; i < TOTAL_LINES; i++) {
-    const nombre = getRandom(nombres);
-    const apellido = getRandom(apellidos);
-    const email = `${nombre.toLowerCase()}.${apellido.toLowerCase()}${i}@testmail.com`;
-
-    const linea = JSON.stringify({ Nombre: nombre, Apellido: apellido, Email: email }) + '\n';
-    if (!stream.write(linea)) {
-     await new Promise<void>((resolve) => stream.once('drain', resolve));
-    }
- }
-  stream.end(() => console.log(`✅ Archivo generado en ${outputPath}`));
-})();
+stream.end(() => {
+  console.log(`✅ Archivo generado con ${RECORDS} líneas (con errores intencionales: ~${Math.floor(RECORDS * ERROR_RATE)}) en: ${FILE_PATH}`);
+});

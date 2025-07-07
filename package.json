@@ -7,13 +7,12 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "generate:file": "ts-node src/scripts/generateFile.ts",
-    "generate:largefile": "ts-node src/scripts/generaArchivoPorBloques.ts",
     "analyze:flame:export": "clinic flame -- node dist/index.js && npx ts-node src/scripts/exportFlame.ts",
     "test": "vitest run",
-    "test:flow": "npm run generate:file && npm run build && npm run test",
-    "test:flow:large": "npm run generate:largefile && npm run build && npm run test"
+    "test:flow": "npm run generate:file && npm run build && npm run test"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "fastify": "^4.27.2",
     "inversify": "^6.0.1",
     "mssql": "^10.0.0",

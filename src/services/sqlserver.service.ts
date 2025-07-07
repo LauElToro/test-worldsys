@@ -19,6 +19,11 @@ export class SqlServerService {
             trustServerCertificate: true,
             encrypt: false,
           },
+          pool: {
+            max: 20,
+            min: 2,
+            idleTimeoutMillis: 30000,
+          },
         });
         console.log('✅ Conexión a SQL Server establecida');
       } catch (err: any) {
@@ -36,16 +41,20 @@ export class SqlServerService {
   }
 
   async insertBatch(rows: string[][]) {
-    await this.connect();
-
+    const pool = this.getPool();
     const table = new sql.Table('Clientes');
     table.create = false;
-    table.columns.add('Nombre', sql.VarChar(100));
-    table.columns.add('Apellido', sql.VarChar(100));
-    table.columns.add('Email', sql.VarChar(100));
+
+table.columns.add('Nombre', sql.VarChar(100));
+table.columns.add('Apellido', sql.VarChar(100));
+table.columns.add('DNI', sql.VarChar(20));
+table.columns.add('Estado', sql.VarChar(20));
+table.columns.add('FechaIngreso', sql.VarChar(20));
+table.columns.add('EsPEP', sql.VarChar(10));
+table.columns.add('EsSujetoObligado', sql.VarChar(10));
 
     for (const row of rows) {
-      if (row.length === 3) {
+      if (row.length === 7) {
         table.rows.add(...row);
       } else {
         console.warn('⚠️ Fila ignorada por formato inválido:', row);
@@ -53,7 +62,8 @@ export class SqlServerService {
     }
 
     try {
-      await this.pool!.request().bulk(table);
+      console.log(`📝 Insertando batch de ${rows.length} filas...`);
+      await pool.request().bulk(table);
     } catch (err: any) {
       console.error('❌ Error al hacer bulk insert:', err.message);
       throw err;

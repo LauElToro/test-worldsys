@@ -136,11 +136,13 @@ DB_NAME=ClientesDB
 
 ```sql
 CREATE TABLE Clientes (
-  Id INT IDENTITY(1,1) PRIMARY KEY,
   Nombre VARCHAR(100),
   Apellido VARCHAR(100),
-  Email VARCHAR(100),
-  created_at DATETIME DEFAULT GETDATE()
+  DNI VARCHAR(20),
+  Estado VARCHAR(50),
+  FechaIngreso VARCHAR(50),
+  EsPep VARCHAR(10),
+  EsSujetoObligado VARCHAR(10)
 );
 ```
 
